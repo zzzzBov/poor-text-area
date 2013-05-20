@@ -109,14 +109,15 @@
         'indent': function () {
             //console.log('indent');
             
-            ///NEED TO FIX FOR WHEN NO TEXT IS SELECTED
-            
             var val,
                 sStart,
                 sEnd,
                 beginning,
                 middle,
                 end,
+                lineStart,
+                i,
+                delta,
                 firstR,
                 firstN;
             
@@ -124,28 +125,47 @@
             sStart = this.selectionStart || 0;
             sEnd = this.selectionEnd || 0;
             
-            //move `sStart` to just after last newline in `beginning`
-            //if there isn't a newline, move to the beginning
-            sStart = Math.max(val.lastIndexOf('\r', sStart - 1), val.lastIndexOf('\n', sStart - 1)) + 1;
+            lineStart = Math.max(val.lastIndexOf('\r', sStart - 1), val.lastIndexOf('\n', sStart - 1)) + 1;
             
-            //move `sEnd` to just before first newline in `end`
-            //if there isn't a newline, move to the end
-            firstR = val.indexOf('\r', sEnd);
-            firstN = val.indexOf('\n', sEnd);
-            if (firstR < 0) {
-                firstR = Number.POSITIVE_INFINITY;
+            if (sStart === sEnd) {
+                beginning = val.slice(0, sStart);
+                middle = val.slice(sStart, sEnd);
+                end = val.slice(sEnd);
+                
+                delta = sStart;
+                delta -= lineStart;
+                delta %= 4;
+                delta = 4 - delta;
+                
+                for (i = 0; i < delta; i += 1) {
+                    beginning += ' ';
+                }
+                
+                sStart += delta;
+            } else {
+                //move `sStart` to just after last newline in `beginning`
+                //if there isn't a newline, move to the beginning
+                sStart = lineStart;
+                
+                //move `sEnd` to just before first newline in `end`
+                //if there isn't a newline, move to the end
+                firstR = val.indexOf('\r', sEnd);
+                firstN = val.indexOf('\n', sEnd);
+                if (firstR < 0) {
+                    firstR = Number.POSITIVE_INFINITY;
+                }
+                if (firstN < 0) {
+                    firstN = Number.POSITIVE_INFINITY;
+                }
+                sEnd = Math.min(firstR, firstN, val.length);
+                
+                beginning = val.slice(0, sStart);
+                middle = val.slice(sStart, sEnd);
+                end = val.slice(sEnd);
+                
+                //add 4 spaces after all newlines in `middle`
+                middle = middle.replace(/^|\r\n?|\n/g, '$&    ');
             }
-            if (firstN < 0) {
-                firstN = Number.POSITIVE_INFINITY;
-            }
-            sEnd = Math.min(firstR, firstN, val.length);
-            
-            beginning = val.slice(0, sStart);
-            middle = val.slice(sStart, sEnd);
-            end = val.slice(sEnd);
-            
-            //add 4 spaces after all newlines in `middle`
-            middle = middle.replace(/^|\r\n?|\n/g, '$&    ');
             
             this.value = beginning + middle + end;
             this.selectionStart = sStart;
@@ -154,14 +174,15 @@
         'outdent': function () {
             //console.log('outdent');
             
-            ///NEED TO FIX FOR WHEN NO TEXT IS SELECTED
-            
             var val,
                 sStart,
                 sEnd,
                 beginning,
                 middle,
                 end,
+                lineStart,
+                i,
+                delta,
                 firstR,
                 firstN;
             
@@ -169,28 +190,46 @@
             sStart = this.selectionStart || 0;
             sEnd = this.selectionEnd || 0;
             
-            //move `sStart` to just after last newline in `beginning`
-            sStart = Math.max(val.lastIndexOf('\r', sStart - 1), val.lastIndexOf('\n', sStart - 1)) + 1;
+            lineStart = Math.max(val.lastIndexOf('\r', sStart - 1), val.lastIndexOf('\n', sStart - 1)) + 1;
             
-            //move `sEnd` to just before first newline in `end`
-            //if there isn't a newline, move to the end
-            firstR = val.indexOf('\r', sEnd);
-            firstN = val.indexOf('\n', sEnd);
-            if (firstR < 0) {
-                firstR = Number.POSITIVE_INFINITY;
+            if (sStart === sEnd) {
+                beginning = val.slice(0, sStart);
+                middle = val.slice(sStart, sEnd);
+                end = val.slice(sEnd);
+                
+                delta = sStart;
+                delta -= lineStart;
+                delta %= 4;
+                delta = delta || 4;
+                
+                for (i = 0; i < delta && beginning.charCodeAt(beginning.length - 1) === 32; i += 1) {
+                    beginning = beginning.slice(0, -1);
+                }
+                
+                sStart -= i;
+            } else {
+                //move `sStart` to just after last newline in `beginning`
+                sStart = lineStart;
+                
+                //move `sEnd` to just before first newline in `end`
+                //if there isn't a newline, move to the end
+                firstR = val.indexOf('\r', sEnd);
+                firstN = val.indexOf('\n', sEnd);
+                if (firstR < 0) {
+                    firstR = Number.POSITIVE_INFINITY;
+                }
+                if (firstN < 0) {
+                    firstN = Number.POSITIVE_INFINITY;
+                }
+                sEnd = Math.min(firstR, firstN, val.length);
+                
+                beginning = val.slice(0, sStart);
+                middle = val.slice(sStart, sEnd);
+                end = val.slice(sEnd);
+                
+                //remove up to 4 spaces, or a single tab, after all newlines in `middle`
+                middle = middle.replace(/(^|\r\n?|\n)(?: {1,4}|\t)/g, '$1');
             }
-            if (firstN < 0) {
-                firstN = Number.POSITIVE_INFINITY;
-            }
-            sEnd = Math.min(firstR, firstN, val.length);
-            
-            beginning = val.slice(0, sStart);
-            middle = val.slice(sStart, sEnd);
-            end = val.slice(sEnd);
-            
-            //remove up to 4 spaces, or a single tab, after all newlines in `middle`
-            middle = middle.replace(/(^|\r\n?|\n)(?: {1,4}|\t)/g, '$1');
-            
             this.value = beginning + middle + end;
             this.selectionStart = sStart;
             this.selectionEnd = sStart + middle.length;
