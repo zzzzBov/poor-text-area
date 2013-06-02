@@ -25,25 +25,25 @@
             key = '' + (+e.altKey) + (+e.shiftKey) + (+e.ctrlKey) + '.' + e.which;
             
             if (shortcuts.hasOwnProperty(key)) {
-                $('textarea').trigger(shortcuts[key]);
+                $(this).trigger(shortcuts[key]);
                 e.preventDefault();
             } else {
                 //console.log(e.which);
             }
         },
         'bold': function () {
-            //console.log('bold');
-            
             var val,
                 sStart,
                 sEnd,
                 beginning,
                 middle,
-                end;
+                end,
+                fwd;
             
             val = this.value;
             sStart = this.selectionStart || 0;
             sEnd = this.selectionEnd || 0;
+            fwd = this.selectionDirection === 'forward';
             beginning = val.slice(0, sStart);
             middle = val.slice(sStart, sEnd);
             end = val.slice(sEnd);
@@ -61,21 +61,22 @@
                 this.selectionStart = sStart + 2;
                 this.selectionEnd = sEnd + 2;
             }
+            this.selectionDirection = fwd ? 'forward' : 'backward';
         },
         'italic': function () {
-            //console.log('italic');
-            
             var val,
                 sStart,
                 sEnd,
                 beginning,
                 middle,
                 end,
-                on;
+                on,
+                fwd;
             
             val = this.value;
             sStart = this.selectionStart || 0;
             sEnd = this.selectionEnd || 0;
+            fwd = this.selectionDirection === 'forward';
             beginning = val.slice(0, sStart);
             middle = val.slice(sStart, sEnd);
             end = val.slice(sEnd);
@@ -105,18 +106,18 @@
                 this.selectionStart = sStart - 1;
                 this.selectionEnd = sEnd - 1;
             }
+            this.selectionDirection = fwd ? 'forward' : 'backward';
         },
         'indent': function () {
-            //console.log('indent');
-            
-            var val,
+            var fwd,
+                i,
+                val,
                 sStart,
                 sEnd,
                 beginning,
                 middle,
                 end,
                 lineStart,
-                i,
                 delta,
                 firstR,
                 firstN;
@@ -124,6 +125,7 @@
             val = this.value;
             sStart = this.selectionStart || 0;
             sEnd = this.selectionEnd || 0;
+            fwd = this.selectionDirection === 'forward';
             
             lineStart = Math.max(val.lastIndexOf('\r', sStart - 1), val.lastIndexOf('\n', sStart - 1)) + 1;
             
@@ -170,11 +172,11 @@
             this.value = beginning + middle + end;
             this.selectionStart = sStart;
             this.selectionEnd = sStart + middle.length;
+            this.selectionDirection = fwd ? 'forward' : 'backward';
         },
         'outdent': function () {
-            //console.log('outdent');
-            
             var val,
+                fwd,
                 sStart,
                 sEnd,
                 beginning,
@@ -189,6 +191,7 @@
             val = this.value;
             sStart = this.selectionStart || 0;
             sEnd = this.selectionEnd || 0;
+            fwd = this.selectionDirection === 'forward';
             
             lineStart = Math.max(val.lastIndexOf('\r', sStart - 1), val.lastIndexOf('\n', sStart - 1)) + 1;
             
@@ -233,13 +236,13 @@
             this.value = beginning + middle + end;
             this.selectionStart = sStart;
             this.selectionEnd = sStart + middle.length;
+            this.selectionDirection = fwd ? 'forward' : 'backward';
         },
         'code': function () {
-            //console.log('code');
-            
             var val,
                 sStart,
                 sEnd,
+                fwd,
                 beginning,
                 middle,
                 end;
@@ -247,6 +250,7 @@
             val = this.value;
             sStart = this.selectionStart || 0;
             sEnd = this.selectionEnd || 0;
+            fwd = this.selectionDirection === 'forward';
             beginning = val.slice(0, sStart);
             middle = val.slice(sStart, sEnd);
             end = val.slice(sEnd);
@@ -262,13 +266,13 @@
                 this.selectionStart = sStart + 1;
                 this.selectionEnd = sEnd + 1;
             }
+            this.selectionDirection = fwd ? 'forward' : 'backward';
         },
         'code2': function () {
-            //console.log('code2');
-            
             var val,
                 sStart,
                 sEnd,
+                fwd,
                 beginning,
                 middle,
                 end;
@@ -276,6 +280,7 @@
             val = this.value;
             sStart = this.selectionStart || 0;
             sEnd = this.selectionEnd || 0;
+            fwd = this.selectionDirection === 'forward';
             beginning = val.slice(0, sStart);
             middle = val.slice(sStart, sEnd);
             end = val.slice(sEnd);
@@ -297,17 +302,18 @@
                 this.selectionStart = sStart + 2;
                 this.selectionEnd = sEnd + 2;
             }
+            this.selectionDirection = fwd ? 'forward' : 'backward';
         },
         'home': function () {
-            //console.log('home');
-            
             var val,
                 sStart,
+                fwd,
                 lineStart,
                 textStart;
             
             val = this.value;
-            sStart = this.selectionStart || 0;
+            fwd = this.selectionDirection === 'forward';
+            sStart = (fwd ? this.selectionEnd : this.selectionStart) || 0;
             
             //find the nearest newline before the cursor
             lineStart = Math.max(val.lastIndexOf('\r', sStart - 1), val.lastIndexOf('\n', sStart - 1)) + 1;
@@ -320,8 +326,6 @@
                 this.selectionEnd = sStart === textStart ? lineStart : textStart;
         },
         'selecthome': function () {
-            //console.log('select home');
-            
             var val,
                 sStart,
                 sEnd,
