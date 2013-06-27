@@ -4,19 +4,20 @@
     var shortcuts;
     
     shortcuts = {
-        '000.9': 'indent',
-        '010.9': 'outdent',
-        '000.36': 'home',
-        '010.36': 'selecthome',
-        '001.66': 'bold',
-        '001.71': 'image',
-        '001.73': 'italic',
-        '001.75': 'code',
-        '011.75': 'code2',
-        '001.76': 'link',
-        '001.79': 'numbered',
-        '001.81': 'quote',
-        '001.85': 'bulleted'
+        '000.9': 'indent',      //tab
+        '010.9': 'outdent',     //shift+tab
+        '000.13': 'newline',    //enter
+        '000.36': 'home',       //home
+        '010.36': 'selecthome', //shift+home
+        '001.66': 'bold',       //ctrl+b
+        '001.71': 'image',      //ctrl+g
+        '001.73': 'italic',     //ctrl+i
+        '001.75': 'code',       //ctrl+k
+        '011.75': 'code2',      //ctrl+shift+k
+        '001.76': 'link',       //ctrl+l
+        '001.79': 'numbered',   //ctrl+o
+        '001.81': 'quote',      //ctrl+q
+        '001.85': 'bulleted'    //ctrl+u
     };
     
     $('body').on({
@@ -28,7 +29,7 @@
                 $(this).trigger(shortcuts[key]);
                 e.preventDefault();
             } else {
-                //console.log(e.which);
+                //console.log(key);
             }
         },
         'bold': function () {
@@ -371,14 +372,34 @@
                 sEnd,
                 beginning,
                 middle,
-                end;
+                end,
+                url,
+                fwd;
             
             val = this.value;
             sStart = this.selectionStart || 0;
             sEnd = this.selectionEnd || 0;
+            fwd = this.selectionDirection === 'forward';
             beginning = val.slice(0, sStart);
             middle = val.slice(sStart, sEnd);
             end = val.slice(sEnd);
+            
+            //escape the brackets in the selection
+            //if the selection is surrounded as a link or image
+            // remove the link/image
+            //otherwise
+            // ask for URL for new link
+            
+            url = prompt('Enter a URL');
+            if (!url) {
+                return;
+            }
+            
+            middle = middle.replace(/[\[\]\\]/g, '\\$&');
+            this.value = beginning + '[' + middle + '][1]' + end + '\n  [1]: ' + url;
+            this.selectionStart = sStart + 1;
+            this.selectionEnd = sStart + 1 + middle.length;
+            this.selectionDirection = fwd ? 'forward' : 'backward';
         },
         'image': function () {
             console.log('image');
@@ -447,6 +468,35 @@
             beginning = val.slice(0, sStart);
             middle = val.slice(sStart, sEnd);
             end = val.slice(sEnd);
+        },
+        'newline': function () {
+            //console.log('newline');
+            
+            var val,
+                sStart,
+                sEnd,
+                beginning,
+                end,
+                lineStart,
+                lineText,
+                newline;
+            
+            val = this.value;
+            sStart = this.selectionStart || 0;
+            sEnd = this.selectionEnd || 0;
+            beginning = val.slice(0, sStart);
+            end = val.slice(sEnd);
+            
+            //find the nearest newline before the cursor
+            lineStart = Math.max(val.lastIndexOf('\r', sStart - 1), val.lastIndexOf('\n', sStart - 1)) + 1;
+            
+            lineText = val.slice(lineStart, sStart);
+            newline = '\n' + lineText.match(/^(?:[*> \t]|\d+\.)*/)[0];
+            
+            this.value = beginning + newline + end;
+            this.selectionStart =
+                this.selectionEnd = beginning.length + newline.length;
+            this.selectionDirection = 'forward';
         }
     }, 'textarea').on('click', '.button', function (e) {
         $('textarea').trigger($(this).data('event'));
