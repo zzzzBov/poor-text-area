@@ -15,6 +15,7 @@
         '001.75': 'code',       //ctrl+k
         '011.75': 'code2',      //ctrl+shift+k
         '001.76': 'link',       //ctrl+l
+        '001.77': 'tabtoggle',  //ctrl+m       ref: http://www.w3.org/TR/wai-aria-practices/#richtext
         '001.79': 'numbered',   //ctrl+o
         '001.81': 'quote',      //ctrl+q
         '001.85': 'bulleted'    //ctrl+u
@@ -497,6 +498,17 @@
             this.selectionStart =
                 this.selectionEnd = beginning.length + newline.length;
             this.selectionDirection = 'forward';
+        },
+        'tabtoggle': function () {
+            //console.log('tab toggle');
+            
+            if (shortcuts.hasOwnProperty('000.9')) {
+                delete shortcuts['000.9'];
+                delete shortcuts['010.9'];
+            } else {
+                shortcuts['000.9'] = 'indent';
+                shortcuts['010.9'] = 'outdent';
+            }
         }
     }, 'textarea').on('click', '.button', function (e) {
         $('textarea').trigger($(this).data('event'));
