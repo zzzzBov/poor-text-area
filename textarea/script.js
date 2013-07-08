@@ -368,7 +368,8 @@
         'link': function () {
             console.log('link');
             
-            var val,
+            var i,
+                val,
                 sStart,
                 sEnd,
                 beginning,
@@ -385,22 +386,34 @@
             middle = val.slice(sStart, sEnd);
             end = val.slice(sEnd);
             
-            //escape the brackets in the selection
-            //if the selection is surrounded as a link or image
-            // remove the link/image
-            //otherwise
-            // ask for URL for new link
-            
-            url = prompt('Enter a URL');
-            if (!url) {
-                return;
+            if (/\[$/.test(beginning) && /^\]\[[^\]]+\]/.test(end)) {
+                //if the selection is surrounded as a link or image
+                // remove the link/image
+                
+                beginning = beginning.replace(/!?\[$/, '');
+                end = end.replace(/^\]\[[^\]]+\]/, '');
+                this.value = beginning + middle + end;
+                this.selectionStart = beginning.length;
+                this.selectionEnd = beginning.length + middle.length;
+                this.selectionDirection = fwd ? 'forward' : 'backward';
+            } else {
+                //otherwise
+                // ask for URL for new link
+                
+                url = prompt('Enter a URL');
+                if (!url) {
+                    return;
+                }
+                //find the first unused numeric key starting at 1
+                for (i = 1; ~val.indexOf('[' + i + ']'); i += 1);
+                
+                //escape the brackets in the selection
+                middle = middle.replace(/[\[\]\\]/g, '\\$&');
+                this.value = beginning + '[' + middle + '][' + i + ']' + end + '\n  [' + i + ']: ' + url;
+                this.selectionStart = sStart + 1;
+                this.selectionEnd = sStart + 1 + middle.length;
+                this.selectionDirection = fwd ? 'forward' : 'backward';
             }
-            
-            middle = middle.replace(/[\[\]\\]/g, '\\$&');
-            this.value = beginning + '[' + middle + '][1]' + end + '\n  [1]: ' + url;
-            this.selectionStart = sStart + 1;
-            this.selectionEnd = sStart + 1 + middle.length;
-            this.selectionDirection = fwd ? 'forward' : 'backward';
         },
         'image': function () {
             console.log('image');
