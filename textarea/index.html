@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -9,6 +9,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Rich text area thinger</title>
     <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet/less" type="text/css" href="style.less" />
+    <script src="less.js"></script>
 </head>
 <body>
     <button class="button button--bold" data-event="bold">bold</button>
@@ -23,7 +25,30 @@
     <button class="button button--bulleted" data-event="bulleted">bulleted list</button>
     <button class="button button--numbered" data-event="numbered">numbered list</button>
     <br>
-    <textarea id="txt" cols="65" rows="20"></textarea>
+    <span class="poor-text-area">
+        <span class="poor-text-area__control-bar">
+            
+        </span>
+        <textarea id="txt" cols="65" rows="20" class="poor-text-area__input"></textarea>
+        <span class="poor-text-area__status-bar">
+            <span class="poor-text-area__status-bar__item poor-text-area__status-bar__item--length">
+                <span class="poor-text-area__status-bar__item__label poor-text-area__status-bar__item--length__label">len:</span>
+                <span class="poor-text-area__status-bar__item__value poor-text-area__status-bar__item--length__value">0</span>
+            </span>
+            <span class="poor-text-area__status-bar__item poor-text-area__status-bar__item--line">
+                <span class="poor-text-area__status-bar__item__label poor-text-area__status-bar__item--line__label">ln:</span>
+                <span class="poor-text-area__status-bar__item__value poor-text-area__status-bar__item--line__value">0</span>
+            </span>
+            <span class="poor-text-area__status-bar__item poor-text-area__status-bar__item--column">
+                <span class="poor-text-area__status-bar__item__label poor-text-area__status-bar__item--column__label">col:</span>
+                <span class="poor-text-area__status-bar__item__value poor-text-area__status-bar__item--column__value">0</span>
+            </span>
+            <span class="poor-text-area__status-bar__item poor-text-area__status-bar__item--tab on" title="Ctrl+M to toggle textarea indentation tabbing on and off">
+                <kbd class="poor-text-area__status-bar__item__label poor-text-area__status-bar__item--tab__label">TAB</kbd>
+                <span class="poor-text-area__status-bar__item__value poor-text-area__status-bar__item--tab__value">ON</span>
+            </span>
+        </span>
+    </span>
     <script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
     <script type="text/javascript" src="script.js"></script>
 </body>

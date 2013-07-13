@@ -1,0 +1,90 @@
+// =============================================================================
+// lists.less is a collection list mixins
+// =============================================================================
+
+// =====================================
+// Dependencies:
+//  * zless/mixins.less
+// =====================================
+
+// =====================================
+// variable declarations
+// =====================================
+@z-list-padding: 20px;
+
+.blank-list() {
+    list-style: none outside;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    
+    & > dd,
+    & > dt,
+    & > li {
+        list-style: none outside;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+.bulleted-list(@pad: @z-list-padding) {
+    list-style-position: outside;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: @pad;
+    padding-right: 0;
+}
+
+.inline-list() {
+    list-style: none outside;
+    margin: 0;
+    padding: 0;
+    
+    & > dd,
+    & > dt,
+    & > li {
+        .inline-block;
+        list-style: none outside;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+//placeholder for invalid list types
+.list(@a, @b: '') {}
+
+.list(blank) {
+    .blank-list;
+}
+
+.list(bullet, @pad: @z-list-padding) {
+    .list(disc, @pad);
+}
+
+.list(@type, @pad: @z-list-padding)
+    when (@type = disc),
+        (@type = circle),
+        (@type = square),
+        (@type = decimal),
+        (@type = decimal-leading-zero),
+        (@type = lower-roman),
+        (@type = upper-roman),
+        (@type = lower-greek),
+        (@type = lower-latin),
+        (@type = upper-latin),
+        (@type = armenian),
+        (@type = georgian),
+        (@type = lower-alpha),
+        (@type = upper-alpha),
+        (@type = none) {
+    list-style-type: @type;
+    .bulleted-list(@pad);
+}
+
+.list(inline) {
+    .inline-list;
+}
+

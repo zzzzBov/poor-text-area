@@ -518,12 +518,36 @@
             if (shortcuts.hasOwnProperty('000.9')) {
                 delete shortcuts['000.9'];
                 delete shortcuts['010.9'];
+                
+                $(this).closest('.poor-text-area').find('.poor-text-area__status-bar__item--tab').removeClass('on').find('.poor-text-area__status-bar__item--tab__value').text('OFF');
             } else {
                 shortcuts['000.9'] = 'indent';
                 shortcuts['010.9'] = 'outdent';
+                
+                $(this).closest('.poor-text-area').find('.poor-text-area__status-bar__item--tab').addClass('on').find('.poor-text-area__status-bar__item--tab__value').text('ON');
             }
         }
     }, 'textarea').on('click', '.button', function (e) {
         $('textarea').trigger($(this).data('event'));
     });
+        
+    setInterval(function () {
+        var txt,
+            val,
+            start,
+            beginning,
+            lines,
+            lineStart;
+        txt = $('textarea').get(0);
+        
+        val = txt.value;
+        start = txt.selectionDirection === 'forward' ? txt.selectionEnd || 0 : txt.selectionStart || 0;
+        beginning = val.slice(0, start);
+        lineStart = Math.max(val.lastIndexOf('\r', start - 1), val.lastIndexOf('\n', start - 1));
+        lines = beginning.split(/\r?\n|\r/g);
+        
+        $('.poor-text-area__status-bar__item--length__value').text(val.length);
+        $('.poor-text-area__status-bar__item--line__value').text(lines.length);
+        $('.poor-text-area__status-bar__item--column__value').text(start - lineStart);
+    }, 15);
 }(this, this.jQuery));
