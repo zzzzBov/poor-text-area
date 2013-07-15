@@ -18,7 +18,8 @@
         '001.77': 'tabtoggle',  //ctrl+m       ref: http://www.w3.org/TR/wai-aria-practices/#richtext
         '001.79': 'numbered',   //ctrl+o
         '001.81': 'quote',      //ctrl+q
-        '001.85': 'bulleted'    //ctrl+u
+        '001.85': 'bulleted',   //ctrl+u
+        '000.122':'fullscreen'  //F11
     };
     
     $('body').on({
@@ -526,8 +527,24 @@
                 
                 $(this).closest('.poor-text-area').find('.poor-text-area__status-bar__item--tab').addClass('on').find('.poor-text-area__status-bar__item--tab__value').text('ON');
             }
+        },
+        'fullscreen': function () {
+            console.log('fullscreen');
+            
+            var pta;
+            pta = $(this).closest('.poor-text-area').get(0);
+            
+            if (pta.requestFullscreen) {
+                pta.requestFullscreen();
+            } else if (pta.mozRequestFullScreen) {
+                pta.mozRequestFullScreen();
+            } else if (pta.webkitRequestFullScreen) {
+                pta.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+            } else if (pta.webkitRequestFullscreen) {
+                pta.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
         }
-    }, 'textarea').on('click', '.button', function (e) {
+    }, 'textarea').on('click', '.button, [role="button"]', function (e) {
         $('textarea').trigger($(this).data('event'));
     });
         

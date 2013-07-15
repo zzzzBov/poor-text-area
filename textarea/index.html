@@ -9,8 +9,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Rich text area thinger</title>
     <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet/less" type="text/css" href="style.less" />
-    <script src="less.js"></script>
+    <link rel="stylesheet/less" type="text/css" href="assets/less/style.less" />
+    <script src="assets/js/less.js"></script>
 </head>
 <body>
     <button class="button button--bold" data-event="bold">bold</button>
@@ -26,8 +26,34 @@
     <button class="button button--numbered" data-event="numbered">numbered list</button>
     <br>
     <span class="poor-text-area">
-        <span class="poor-text-area__control-bar">
-            
+        <span class="poor-text-area__control-bar" type="toolbar">
+            <span class="poor-text-area__control-bar__button poor-text-area__control-bar__button--first poor-text-area__control-bar__button--bold" role="button" tabindex="0" data-event="bold">
+                <img src="assets/images/icons/bold.png" alt="bold" width="20" height="20" />
+            </span
+            ><span class="poor-text-area__control-bar__button poor-text-area__control-bar__button--italic" role="button" tabindex="0" data-event="italic">
+                <img src="assets/images/icons/italic.png" alt="italic" width="20" height="20" />
+            </span
+            ><span class="poor-text-area__control-bar__button poor-text-area__control-bar__button--outdent" role="button" tabindex="0" data-event="outdent">
+                <img src="assets/images/icons/outdent.png" alt="outdent" width="20" height="20" />
+            </span
+            ><span class="poor-text-area__control-bar__button poor-text-area__control-bar__button--indent" role="button" tabindex="0" data-event="indent">
+                <img src="assets/images/icons/indent.png" alt="indent" width="20" height="20" />
+            </span
+            ><span class="poor-text-area__control-bar__button poor-text-area__control-bar__button--code" role="button" tabindex="0" data-event="code">
+                <img src="assets/images/icons/code.png" alt="code" width="20" height="20" />
+            </span
+            ><span class="poor-text-area__control-bar__button poor-text-area__control-bar__button--quote" role="button" tabindex="0" data-event="quote">
+                <img src="assets/images/icons/quote.png" alt="quote" width="20" height="20" />
+            </span
+            ><span class="poor-text-area__control-bar__button poor-text-area__control-bar__button--bullet" role="button" tabindex="0" data-event="bulleted">
+                <img src="assets/images/icons/bullet.png" alt="bullet" width="20" height="20" />
+            </span
+            ><span class="poor-text-area__control-bar__button poor-text-area__control-bar__button--numbered" role="button" tabindex="0" data-event="numbered">
+                <img src="assets/images/icons/number.png" alt="number" width="20" height="20" />
+            </span
+            ><span class="poor-text-area__control-bar__button poor-text-area__control-bar__button--last poor-text-area__control-bar__button--image" role="button" tabindex="0" data-event="image">
+                <img src="assets/images/icons/image.png" alt="image" width="20" height="20" />
+            </span>
         </span>
         <textarea id="txt" cols="65" rows="20" class="poor-text-area__input"></textarea>
         <span class="poor-text-area__status-bar">
@@ -37,11 +63,11 @@
             </span>
             <span class="poor-text-area__status-bar__item poor-text-area__status-bar__item--line">
                 <span class="poor-text-area__status-bar__item__label poor-text-area__status-bar__item--line__label">ln:</span>
-                <span class="poor-text-area__status-bar__item__value poor-text-area__status-bar__item--line__value">0</span>
+                <span class="poor-text-area__status-bar__item__value poor-text-area__status-bar__item--line__value">1</span>
             </span>
             <span class="poor-text-area__status-bar__item poor-text-area__status-bar__item--column">
                 <span class="poor-text-area__status-bar__item__label poor-text-area__status-bar__item--column__label">col:</span>
-                <span class="poor-text-area__status-bar__item__value poor-text-area__status-bar__item--column__value">0</span>
+                <span class="poor-text-area__status-bar__item__value poor-text-area__status-bar__item--column__value">1</span>
             </span>
             <span class="poor-text-area__status-bar__item poor-text-area__status-bar__item--tab on" title="Ctrl+M to toggle textarea indentation tabbing on and off">
                 <kbd class="poor-text-area__status-bar__item__label poor-text-area__status-bar__item--tab__label">TAB</kbd>
@@ -50,6 +76,6 @@
         </span>
     </span>
     <script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
-    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="assets/js/script.js"></script>
 </body>
 </html>
