@@ -533,15 +533,24 @@
             
             var pta;
             pta = $(this).closest('.poor-text-area').get(0);
-            
-            if (pta.requestFullscreen) {
-                pta.requestFullscreen();
-            } else if (pta.mozRequestFullScreen) {
-                pta.mozRequestFullScreen();
-            } else if (pta.webkitRequestFullScreen) {
-                pta.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-            } else if (pta.webkitRequestFullscreen) {
-                pta.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+            if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement) {
+                if (document.cancelFullScreen) {
+                    document.cancelFullScreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitCancelFullScreen) {
+                    document.webkitCancelFullScreen();
+                }
+            } else {
+                if (pta.requestFullscreen) {
+                    pta.requestFullscreen();
+                } else if (pta.mozRequestFullScreen) {
+                    pta.mozRequestFullScreen();
+                } else if (pta.webkitRequestFullScreen) {
+                    pta.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+                } else if (pta.webkitRequestFullscreen) {
+                    pta.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+                }
             }
         }
     }, 'textarea').on('click', '.button, [role="button"]', function (e) {

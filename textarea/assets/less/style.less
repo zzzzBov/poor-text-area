@@ -152,3 +152,41 @@
 .poor-text-area__status-bar__item--tab__label {
     font-family: "Courier New", monospace;
 }
+
+.poor-text-area__status-bar__item--fullscreen {
+    cursor: pointer;
+    outline: 0;
+    
+    &:focus {
+        border-color: #333;
+        outline: 0;
+    }
+    
+    &:hover {
+        background-color: #F0F0F0;
+    }
+    
+    &:active {
+        background-color: #FFF;
+    }
+}
+
+[data-fullscreen="0"] {
+    :-moz-full-screen & {
+        display: none;
+    }
+    :-webkit-full-screen & {
+        display: none;
+    }
+}
+
+[data-fullscreen="1"] {
+    display: none;
+    
+    :-moz-full-screen & {
+        display: block;
+    }
+    :-webkit-full-screen & {
+        display: block;
+    }
+}
