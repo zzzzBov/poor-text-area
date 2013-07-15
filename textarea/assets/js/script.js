@@ -529,7 +529,7 @@
             }
         },
         'fullscreen': function () {
-            console.log('fullscreen');
+            //console.log('fullscreen');
             
             var pta;
             pta = $(this).closest('.poor-text-area').get(0);
