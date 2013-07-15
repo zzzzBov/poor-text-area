@@ -572,8 +572,8 @@
         lineStart = Math.max(val.lastIndexOf('\r', start - 1), val.lastIndexOf('\n', start - 1));
         lines = beginning.split(/\r?\n|\r/g);
         
-        $('.poor-text-area__status-bar__item--length__value').text(val.length);
-        $('.poor-text-area__status-bar__item--line__value').text(lines.length);
-        $('.poor-text-area__status-bar__item--column__value').text(start - lineStart);
-    }, 15);
+        $('.poor-text-area__info-bar__item--length__value').text(val.length);
+        $('.poor-text-area__info-bar__item--line__value').text(lines.length);
+        $('.poor-text-area__info-bar__item--column__value').text(start - lineStart);
+    }, 50);
 }(this, this.jQuery));
