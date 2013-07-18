@@ -90,6 +90,9 @@
             'tabbingDisabled': false,
             'linkManager': function (callback) {
                 callback(prompt('Enter a URL'));
+            },
+            'imageManager': function (callback) {
+                callback(prompt('Enter an image URL'));
             }
         },
         _init: function () {
@@ -627,7 +630,7 @@
             end = val.slice(sEnd);
             
             if (/\[$/.test(beginning) && /^\]\[[^\]]+\]/.test(end)) {
-                //if the selection is surrounded as a link or image
+                //if the selection is surrounded by a link or image
                 //remove the link/image
                 
                 beginning = beginning.replace(/!?\[$/, '');
@@ -667,12 +670,17 @@
         image: function () {
             var event,
                 elem,
+                i,
                 val,
                 sStart,
                 sEnd,
                 beginning,
                 middle,
-                end;
+                end,
+                url,
+                fwd,
+                imageManager,
+                imageManagerContext;
             
             event = $.Event('ptaimage');
             this._element.trigger(event);
@@ -684,9 +692,48 @@
             val = elem.value;
             sStart = elem.selectionStart || 0;
             sEnd = elem.selectionEnd || 0;
+            fwd = elem.selectionDirection === 'forward';
             beginning = val.slice(0, sStart);
             middle = val.slice(sStart, sEnd);
             end = val.slice(sEnd);
+            
+            if (/\![$/.test(beginning) && /^\]\[[^\]]+\]/.test(end)) {
+                //if the selection is surrounded by an image
+                //remove the image
+                
+                beginning = beginning.replace(/!\[$/, '');
+                end = end.replace(/^\]\[[^\]]+\]/, '');
+                elem.value = beginning + middle + end;
+                elem.selectionStart = beginning.length;
+                elem.selectionEnd = beginning.length + middle.length;
+                elem.selectionDirection = fwd ? 'forward' : 'backward';
+            } else {
+                //otherwise
+                //ask for URL for new image
+                
+                imageManager = this._options.imageManager;
+                imageManagerContext = {};
+                
+                if (!$.isFunction(imageManager)) {
+                    return;
+                }
+                
+                imageManager.call(imageManagerContext, function (url) {
+                    if (!url) {
+                        return;
+                    }
+                    
+                    //find the first unused numeric key starting at 1
+                    for (i = 1; ~val.indexOf('[' + i + ']'); i += 1);
+                    
+                    //escape the brackets in the selection
+                    middle = middle.replace(/[\[\]\\]/g, '\\$&');
+                    elem.value = beginning + '![' + middle + '][' + i + ']' + end + '\n  [' + i + ']: ' + url;
+                    elem.selectionStart = sStart + 2;
+                    elem.selectionEnd = sStart + 2 + middle.length;
+                    elem.selectionDirection = fwd ? 'forward' : 'backward';
+                });
+            }
         },
         newline: function () {
             var event,
