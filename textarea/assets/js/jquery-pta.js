@@ -28,7 +28,10 @@
         this._element = element;
         this._options = opts;
         
-        element.wrap('<span>').on('keydown', $.proxy(this, '_keydownHandler'));
+        element
+            .wrap('<span>')
+            .on('keydown', $.proxy(this, '_keydownHandler'))
+            .on('ptaindent ptaoutdent', $.proxy(this, '_tabbingDisabledHandler'));
         this._pta = $(element.parent()).on('click keydown', '[data-event]', $.proxy(this, '_controlBarClickHandler'));
         
         this._controlBar = $('<span>').insertBefore(this._element);
@@ -83,6 +86,10 @@
                 '001.81':   'quote',        //ctrl+q
                 '001.85':   'bulleted',     //ctrl+u
                 '000.122':  'fullscreen'    //F11
+            },
+            'tabbingDisabled': false,
+            'linkManager': function (callback) {
+                callback(prompt('Enter a URL'));
             }
         },
         _init: function () {
@@ -177,11 +184,19 @@
             }
         },
         _keydownHandler: function (e) {
-            var key;
+            var key,
+                res;
             key = '' + (+e.altKey) + (+e.shiftKey) + (+e.ctrlKey) + '.' + e.which;
             
             if (this._options.keys.hasOwnProperty(key) && $.isFunction(this[this._options.keys[key]])) {
-                this[this._options.keys[key]]();
+                res = this[this._options.keys[key]]();
+                if (!res) {
+                    e.preventDefault();
+                }
+            }
+        },
+        _tabbingDisabledHandler: function (e) {
+            if (this._options.tabbingDisabled) {
                 e.preventDefault();
             }
         },
@@ -200,7 +215,7 @@
             event = $.Event('ptabold');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
             elem = this._element.get(0);
@@ -242,7 +257,7 @@
             event = $.Event('ptaitalic');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
             elem = this._element.get(0);
@@ -299,7 +314,7 @@
             event = $.Event('ptaoutdent');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
             elem = this._element.get(0);
@@ -372,7 +387,7 @@
             event = $.Event('ptaindent');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
             elem = this._element.get(0);
@@ -442,7 +457,7 @@
             event = $.Event('ptacode');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
             elem = this._element.get(0);
@@ -481,7 +496,7 @@
             event = $.Event('ptacode2');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
             elem = this._element.get(0);
@@ -524,7 +539,7 @@
             event = $.Event('ptaquote');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
             elem = this._element.get(0);
@@ -547,7 +562,7 @@
             event = $.Event('ptabulleted');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
             elem = this._element.get(0);
@@ -570,7 +585,7 @@
             event = $.Event('ptanumbered');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
             elem = this._element.get(0);
@@ -592,11 +607,14 @@
                 middle,
                 end,
                 url,
-                fwd;
+                fwd,
+                linkManager,
+                linkManagerContext;
+            
             event = $.Event('ptalink');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
             elem = this._element.get(0);
@@ -622,19 +640,28 @@
                 //otherwise
                 //ask for URL for new link
                 
-                url = prompt('Enter a URL');
-                if (!url) {
+                linkManager = this._options.linkManager;
+                linkManagerContext = {};
+                
+                if (!$.isFunction(linkManager)) {
                     return;
                 }
-                //find the first unused numeric key starting at 1
-                for (i = 1; ~val.indexOf('[' + i + ']'); i += 1);
                 
-                //escape the brackets in the selection
-                middle = middle.replace(/[\[\]\\]/g, '\\$&');
-                elem.value = beginning + '[' + middle + '][' + i + ']' + end + '\n  [' + i + ']: ' + url;
-                elem.selectionStart = sStart + 1;
-                elem.selectionEnd = sStart + 1 + middle.length;
-                elem.selectionDirection = fwd ? 'forward' : 'backward';
+                linkManager.call(linkManagerContext, function (url) {
+                    if (!url) {
+                        return;
+                    }
+                    
+                    //find the first unused numeric key starting at 1
+                    for (i = 1; ~val.indexOf('[' + i + ']'); i += 1);
+                    
+                    //escape the brackets in the selection
+                    middle = middle.replace(/[\[\]\\]/g, '\\$&');
+                    elem.value = beginning + '[' + middle + '][' + i + ']' + end + '\n  [' + i + ']: ' + url;
+                    elem.selectionStart = sStart + 1;
+                    elem.selectionEnd = sStart + 1 + middle.length;
+                    elem.selectionDirection = fwd ? 'forward' : 'backward';
+                });
             }
         },
         image: function () {
@@ -650,7 +677,7 @@
             event = $.Event('ptaimage');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
             elem = this._element.get(0);
@@ -676,7 +703,7 @@
             event = $.Event('ptanewline');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
             elem = this._element.get(0);
@@ -708,7 +735,7 @@
             event = $.Event('ptahome');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
             elem = this._element.get(0);
@@ -740,7 +767,7 @@
             event = $.Event('ptaselecthome');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
             elem = this._element.get(0);
@@ -777,22 +804,10 @@
             event = $.Event('ptatabtoggle');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
-            /*
-            if (shortcuts.hasOwnProperty('000.9')) {
-                delete shortcuts['000.9'];
-                delete shortcuts['010.9'];
-                
-                $(this).closest('.poor-text-area').find('.poor-text-area__status-bar__item--tab').removeClass('on').find('.poor-text-area__status-bar__item--tab__value').text('OFF');
-            } else {
-                shortcuts['000.9'] = 'indent';
-                shortcuts['010.9'] = 'outdent';
-                
-                $(this).closest('.poor-text-area').find('.poor-text-area__status-bar__item--tab').addClass('on').find('.poor-text-area__status-bar__item--tab__value').text('ON');
-            }
-            */
+            this._options.tabbingDisabled = !this._options.tabbingDisabled;
         },
         fullscreen: function () {
             var event,
@@ -800,7 +815,7 @@
             event = $.Event('ptafullscreen');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
-                return;
+                return true;
             }
             
             pta = this._pta.get(0);
