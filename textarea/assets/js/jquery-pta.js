@@ -230,9 +230,25 @@
             }
         },
         _updateHandler: function () {
-            var data;
+            var elem,
+                val,
+                start,
+                beginning,
+                lines,
+                lineStart,
+                data;
+            
+            elem = this._element.get(0);
+            val = elem.value;
+            start = elem.selectionDirection === 'forward' ? elem.selectionEnd || 0 : elem.selectionStart || 0;
+            beginning = val.slice(0, start);
+            lineStart = Math.max(val.lastIndexOf('\r', start - 1), val.lastIndexOf('\n', start - 1));
+            lines = beginning.split(/\r?\n|\r/g);
+            
             data = {
-                length: this._element.val().length
+                length: this._element.val().length,
+                line: lines.length,
+                column: start - lineStart,
             };
             this._pta.find('[data-info]').each(function () {
                 var key,
