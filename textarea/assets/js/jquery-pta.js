@@ -43,6 +43,8 @@
         this._controlBar = $('<span>').insertBefore(this._element);
         this._statusBar = $('<span>').insertAfter(this._element);
         this._infoBar = $('<span>').insertAfter(this._element);
+        
+        this._interval = setInterval($.proxy(this, '_updateHandler'), 75);
     };
     $[widget].prototype = {
         _options: {
@@ -169,6 +171,7 @@
             this._statusBar.remove();
             this._infoBar.remove();
             this._element.unwrap().off('.pta');
+            clearInterval(this._interval);
         },
         _setOption: function (name, value) {
             //custom mutator code here
@@ -225,6 +228,21 @@
             if (this._options.tabbingDisabled) {
                 e.preventDefault();
             }
+        },
+        _updateHandler: function () {
+            var data;
+            data = {
+                length: this._element.val().length
+            };
+            this._pta.find('[data-info]').each(function () {
+                var key,
+                    $this;
+                $this = $(this);
+                key = $this.data('info');
+                if (data.hasOwnProperty(key)) {
+                    $this.text(data[key]);
+                }
+            });
         },
         bold: function () {
             //trigger the 'ptabold' event, if successful, embolden the text
