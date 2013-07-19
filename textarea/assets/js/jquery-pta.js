@@ -4,7 +4,7 @@
  * Generated using jQuery Widget Template
  * Copyright (c) zzzzBov 2012
  */
-(function ($, widget) {
+(function ($, widget, undefined) {
     "use strict";
     function Control(type) {
         this['class'] = 'poor-text-area__control-bar__control--' + type,
@@ -21,6 +21,12 @@
         this.value = value;
     }
     
+    function Status(type) {
+        this['class'] = 'poor-text-area__status-bar__status--' + type;
+        this.contents = '<img src="assets/images/icons/maximize.png" alt="fullscreen" width="14" height="14" data-fullscreen="0" /><img src="assets/images/icons/restore.png" alt="restore" width="14" height="14" data-fullscreen="1" />';
+        this.event = type;
+    }
+    
     $[widget] = function (element, opts) {
         if (!(this instanceof $[widget])) {
             return new $[widget](element, opts);
@@ -30,8 +36,8 @@
         
         element
             .wrap('<span>')
-            .on('keydown', $.proxy(this, '_keydownHandler'))
-            .on('ptaindent ptaoutdent', $.proxy(this, '_tabbingDisabledHandler'));
+            .on('keydown.pta', $.proxy(this, '_keydownHandler'))
+            .on('ptaindent.pta ptaoutdent.pta', $.proxy(this, '_tabbingDisabledHandler'));
         this._pta = $(element.parent()).on('click keydown', '[data-event]', $.proxy(this, '_controlBarClickHandler'));
         
         this._controlBar = $('<span>').insertBefore(this._element);
@@ -50,7 +56,8 @@
                 infoBarInfo: 'poor-text-area__info-bar__info',
                 infoBarInfoLabel: 'poor-text-area__info-bar__info__label',
                 infoBarInfoValue: 'poor-text-area__info-bar__info__value',
-                statusBar: 'poor-text-area__status-bar'
+                statusBar: 'poor-text-area__status-bar',
+                statusBarStatus: 'poor-text-area__status-bar__status'
             },
             'controls': [
                 new Control('bold'),
@@ -58,9 +65,9 @@
                 new Control('outdent'),
                 new Control('indent'),
                 new Control('code'),
-                new Control('quote'),
-                new Control('bulleted'),
-                new Control('numbered'),
+                //new Control('quote'),
+                //new Control('bulleted'),
+                //new Control('numbered'),
                 new Control('link'),
                 new Control('image')
             ],
@@ -68,6 +75,9 @@
                 new Info('length', 'len:', 0),
                 new Info('line', 'ln:', 1),
                 new Info('column', 'col:', 1)
+            ],
+            'status': [
+                new Status('fullscreen')
             ],
             'keys': {
                 '000.9':    'indent',       //tab
@@ -112,25 +122,26 @@
             $infoBar = this._infoBar.attr('class', '').addClass(options.classes.infoBar).empty();
             
             $.each(options.controls, function (i) {
-                var $ctrl,
-                    first,
+                var first,
                     last;
                 
                 first = !i;
                 last = (i + 1) === options.controls.length;
                 
-                $ctrl = $('<span>').attr({
-                    'class': this['class'],
-                    'data-event': this.event,
-                    'role': 'button',
-                    'tabindex': 0
-                }).addClass(options.classes.controlBarControl)
+                $('<span>')
+                    .attr({
+                        'class': this['class'],
+                        'data-event': this.event,
+                        'role': 'button',
+                        'tabindex': 0
+                    }).addClass(options.classes.controlBarControl)
                     .toggleClass(options.classes.controlBarFirstControl, first)
-                    .toggleClass(options.classes.controlBarLastControl, last);
-                $ctrl.append(this.contents).appendTo($controlBar);
+                    .toggleClass(options.classes.controlBarLastControl, last)
+                    .append(this.contents)
+                    .appendTo($controlBar);
             });
             
-            $.each(options.info, function (i) {
+            $.each(options.info, function () {
                 var $info,
                     $label,
                     $value;
@@ -140,12 +151,24 @@
                 $value = $('<span>').addClass(options.classes.infoBarInfoValue).addClass(this.valueClass).text(this.value).attr('data-info', this.info);
                 $info.append($label).append($value).appendTo($infoBar);
             });
+            
+            $.each(options.status, function () {
+                $('<span>')
+                    .attr({
+                        'class': this['class'],
+                        'data-event': this.event,
+                        'role': 'button',
+                        'tabindex': -1
+                    }).addClass(options.classes.statusBarStatus)
+                    .append(this.contents)
+                    .appendTo($statusBar);
+            });
         },
         destroy: function () {
             this._controlBar.remove();
             this._statusBar.remove();
             this._infoBar.remove();
-            this._element.unwrap();
+            this._element.unwrap().off('.pta');
         },
         _setOption: function (name, value) {
             //custom mutator code here
@@ -652,9 +675,10 @@
                 
                 linkManager.call(linkManagerContext, function (url) {
                     if (!url) {
+                        $(elem).focus();
                         return;
                     }
-                    
+                    url = '' + url;
                     //find the first unused numeric key starting at 1
                     for (i = 1; ~val.indexOf('[' + i + ']'); i += 1);
                     
@@ -720,9 +744,10 @@
                 
                 imageManager.call(imageManagerContext, function (url) {
                     if (!url) {
+                        $(elem).focus();
                         return;
                     }
-                    
+                    url = '' + url;
                     //find the first unused numeric key starting at 1
                     for (i = 1; ~val.indexOf('[' + i + ']'); i += 1);
                     
@@ -858,7 +883,9 @@
         },
         fullscreen: function () {
             var event,
-                pta;
+                pta,
+                fn,
+                axo;
             event = $.Event('ptafullscreen');
             this._element.trigger(event);
             if (event.isDefaultPrevented()) {
@@ -868,22 +895,14 @@
             pta = this._pta.get(0);
             
             if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement) {
-                if (document.cancelFullScreen) {
-                    document.cancelFullScreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.webkitCancelFullScreen) {
-                    document.webkitCancelFullScreen();
+                fn = document.cancelFullScreen || document.mozCancelFullScreen || document.webkitCancelFullScreen;
+                if (fn) {
+                    fn.call(document);
                 }
             } else {
-                if (pta.requestFullscreen) {
-                    pta.requestFullscreen();
-                } else if (pta.mozRequestFullScreen) {
-                    pta.mozRequestFullScreen();
-                } else if (pta.webkitRequestFullScreen) {
-                    pta.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-                } else if (pta.webkitRequestFullscreen) {
-                    pta.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+                fn = pta.requestFullscreen || pta.mozRequestFullScreen || pta.webkitRequestFullScreen || pta.webkitRequestFullscreen;
+                if (fn) {
+                    fn.call(pta, Element && Element.ALLOW_KEYBOARD_INPUT);
                 }
             }
         }
