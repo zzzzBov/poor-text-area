@@ -55,6 +55,8 @@
 
 .poor-text-area__control-bar__control {
     background-color: #FFF;
+    background-position: center;
+    background-repeat: no-repeat;
     border: 1px solid #AAA;
     cursor: pointer;
     display: inline-block;
@@ -62,9 +64,11 @@
     height: 20px;
     line-height: 12px;
     margin: 2px 0 2px -1px;
+    overflow: hidden;
     padding: 0;
     position: relative;
     text-align: center;
+    text-indent: -1000px;
     vertical-align: middle;
     width: 20px;
     
@@ -81,6 +85,46 @@
     &:active {
         background-color: #FFF;
     }
+}
+
+.poor-text-area__control-bar__control--bold {
+    background-image: url(../images/icons/bold.png);
+}
+
+.poor-text-area__control-bar__control--italic {
+    background-image: url(../images/icons/italic.png);
+}
+
+.poor-text-area__control-bar__control--indent {
+    background-image: url(../images/icons/indent.png);
+}
+
+.poor-text-area__control-bar__control--outdent {
+    background-image: url(../images/icons/outdent.png);
+}
+
+.poor-text-area__control-bar__control--numbered {
+    background-image: url(../images/icons/numbered.png);
+}
+
+.poor-text-area__control-bar__control--bulleted {
+    background-image: url(../images/icons/bulleted.png);
+}
+
+.poor-text-area__control-bar__control--quote {
+    background-image: url(../images/icons/quote.png);
+}
+
+.poor-text-area__control-bar__control--code {
+    background-image: url(../images/icons/code.png);
+}
+
+.poor-text-area__control-bar__control--link {
+    background-image: url(../images/icons/link.png);
+}
+
+.poor-text-area__control-bar__control--image {
+    background-image: url(../images/icons/image.png);
 }
 
 .poor-text-area__control-bar__control--first {
@@ -127,35 +171,19 @@
 
 .poor-text-area__status-bar__status {
     background-color: #FFF;
+    background-position: center;
+    background-repeat: no-repeat;
     border: 1px solid #AAA;
     .border-radius(3px);
+    cursor: pointer;
     display: inline-block;
     height: 14px;
     margin: 2px 4px 2px 0;
-    vertical-align: top;
-}
-
-.poor-text-area__status-bar__status--tab {
-    background-color: #F0F0F0;
-    font-size: 11px;
-    height: 12px;
-    line-height: 12px;
-    padding: 1px 3px;
-    
-    &.on {
-        //background-color: #3879d9;
-        background-color: #FFF;
-        //color: #FFF;
-    }
-}
-
-.poor-text-area__status-bar__status--tab__label {
-    font-family: "Courier New", monospace;
-}
-
-.poor-text-area__status-bar__status--fullscreen {
-    cursor: pointer;
     outline: 0;
+    overflow: hidden;
+    text-indent: -1000px;
+    vertical-align: top;
+    width: 14px;
     
     &:focus {
         border-color: #333;
@@ -171,22 +199,30 @@
     }
 }
 
-[data-fullscreen="0"] {
-    :-moz-full-screen & {
-        display: none;
-    }
-    :-webkit-full-screen & {
-        display: none;
+.poor-text-area__status-bar__status--tabtoggle {
+    background-image: url(../images/icons/navigation.png);
+    
+    [data-tabbable="1"] & {
+        background-image: url(../images/icons/indentation.png);
     }
 }
 
-[data-fullscreen="1"] {
-    display: none;
+.poor-text-area__status-bar__status--tab__label {
+    font-family: "Courier New", monospace;
+}
+
+.poor-text-area__status-bar__status--fullscreen {
+    background-image: url(../images/icons/maximize.png);
+    
+    .fullscreen() {
+        background-image: url(../images/icons/restore.png);
+    }
     
     :-moz-full-screen & {
-        display: block;
+        .fullscreen;
     }
+
     :-webkit-full-screen & {
-        display: block;
+        .fullscreen;
     }
 }

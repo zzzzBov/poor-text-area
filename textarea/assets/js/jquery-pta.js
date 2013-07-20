@@ -8,7 +8,7 @@
     "use strict";
     function Control(type) {
         this['class'] = 'poor-text-area__control-bar__control--' + type,
-        this.contents = '<img src="assets/images/icons/' + type + '.png" alt="' + type + '" width="20" height="20" />';
+        this.contents = type;
         this.event = type;
     }
     
@@ -23,7 +23,7 @@
     
     function Status(type) {
         this['class'] = 'poor-text-area__status-bar__status--' + type;
-        this.contents = '<img src="assets/images/icons/maximize.png" alt="fullscreen" width="14" height="14" data-fullscreen="0" /><img src="assets/images/icons/restore.png" alt="restore" width="14" height="14" data-fullscreen="1" />';
+        this.contents = type;
         this.event = type;
     }
     
@@ -44,7 +44,13 @@
         this._statusBar = $('<span>').insertAfter(this._element);
         this._infoBar = $('<span>').insertAfter(this._element);
         
-        this._interval = setInterval($.proxy(this, '_updateHandler'), 75);
+        this._interval = setInterval($.proxy(this, '_updateHandler'), 100);
+        
+        if (this._options.tabbingDisabled) {
+            this._pta.attr('data-tabbable', '0');
+        } else {
+            this._pta.attr('data-tabbable', '1');
+        }
     };
     $[widget].prototype = {
         _options: {
@@ -79,6 +85,7 @@
                 new Info('column', 'col:', 1)
             ],
             'status': [
+                new Status('tabtoggle'),
                 new Status('fullscreen')
             ],
             'keys': {
@@ -914,6 +921,12 @@
             }
             
             this._options.tabbingDisabled = !this._options.tabbingDisabled;
+            
+            if (this._options.tabbingDisabled) {
+                this._pta.attr('data-tabbable', '0');
+            } else {
+                this._pta.attr('data-tabbable', '1');
+            }
         },
         fullscreen: function () {
             var event,
