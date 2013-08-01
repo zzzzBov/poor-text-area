@@ -108,10 +108,10 @@
             },
             'tabbingDisabled': false,
             'linkManager': function (callback) {
-                callback(prompt('Enter a URL'));
+                callback(prompt('Enter a URL', 'http://'));
             },
             'imageManager': function (callback) {
-                callback(prompt('Enter an image URL'));
+                callback(prompt('Enter an image URL', 'http://'));
             }
         },
         _init: function () {
