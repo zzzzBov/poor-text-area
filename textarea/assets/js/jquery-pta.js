@@ -36,15 +36,17 @@
         
         element
             .wrap('<span>')
-            .on('keydown.pta', $.proxy(this, '_keydownHandler'))
-            .on('ptaindent.pta ptaoutdent.pta', $.proxy(this, '_tabbingDisabledHandler'));
+            .on({
+                'keydown.pta': $.proxy(this, '_keydownHandler'),
+                'ptaindent.pta ptaoutdent.pta': $.proxy(this, '_tabbingDisabledHandler'),
+                'focus.pta': $.proxy(this, '_focusHandler'),
+                'blur.pta': $.proxy(this, '_blurHandler')
+            });
         this._pta = $(element.parent()).on('click keydown', '[data-event]', $.proxy(this, '_controlBarClickHandler'));
         
         this._controlBar = $('<span>').insertBefore(this._element);
         this._statusBar = $('<span>').insertAfter(this._element);
         this._infoBar = $('<span>').insertAfter(this._element);
-        
-        this._interval = setInterval($.proxy(this, '_updateHandler'), 100);
         
         if (this._options.tabbingDisabled) {
             this._pta.attr('data-tabbable', '0');
@@ -107,10 +109,10 @@
                 '000.122':  'fullscreen'    //F11
             },
             'tabbingDisabled': false,
-            'linkManager': function (callback) {
+            'linkManager': function (callback, text) {
                 callback(prompt('Enter a URL', 'http://'));
             },
-            'imageManager': function (callback) {
+            'imageManager': function (callback, text) {
                 callback(prompt('Enter an image URL', 'http://'));
             }
         },
@@ -172,6 +174,8 @@
                     .append(this.contents)
                     .appendTo($statusBar);
             });
+            
+            this._updateHandler();
         },
         destroy: function () {
             this._controlBar.remove();
@@ -266,6 +270,13 @@
                     $this.text(data[key]);
                 }
             });
+        },
+        _focusHandler: function () {
+            clearInterval(this._interval);
+            this._interval = setInterval($.proxy(this, '_updateHandler'), 75);
+        },
+        _blurHandler: function () {
+            clearInterval(this._interval);
         },
         bold: function () {
             //trigger the 'ptabold' event, if successful, embolden the text
@@ -714,7 +725,7 @@
                     return;
                 }
                 
-                linkManager.call(linkManagerContext, function (url) {
+                linkManager.call(linkManagerContext, function (url, text) {
                     if (!url) {
                         $(elem).focus();
                         return;
@@ -723,13 +734,16 @@
                     //find the first unused numeric key starting at 1
                     for (i = 1; ~val.indexOf('[' + i + ']'); i += 1);
                     
+                    middle = text || middle;
+                    middle += '';
+                    
                     //escape the brackets in the selection
                     middle = middle.replace(/[\[\]\\]/g, '\\$&');
                     elem.value = beginning + '[' + middle + '][' + i + ']' + end + '\n  [' + i + ']: ' + url;
                     elem.selectionStart = sStart + 1;
                     elem.selectionEnd = sStart + 1 + middle.length;
                     elem.selectionDirection = fwd ? 'forward' : 'backward';
-                });
+                }, middle);
             }
         },
         image: function () {
@@ -783,7 +797,7 @@
                     return;
                 }
                 
-                imageManager.call(imageManagerContext, function (url) {
+                imageManager.call(imageManagerContext, function (url, text) {
                     if (!url) {
                         $(elem).focus();
                         return;
@@ -792,13 +806,16 @@
                     //find the first unused numeric key starting at 1
                     for (i = 1; ~val.indexOf('[' + i + ']'); i += 1);
                     
+                    middle = text || middle;
+                    middle += '';
+                    
                     //escape the brackets in the selection
                     middle = middle.replace(/[\[\]\\]/g, '\\$&');
                     elem.value = beginning + '![' + middle + '][' + i + ']' + end + '\n  [' + i + ']: ' + url;
                     elem.selectionStart = sStart + 2;
                     elem.selectionEnd = sStart + 2 + middle.length;
                     elem.selectionDirection = fwd ? 'forward' : 'backward';
-                });
+                }, middle);
             }
         },
         newline: function () {
