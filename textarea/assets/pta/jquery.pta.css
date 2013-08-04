@@ -1,0 +1,276 @@
+.poor-text-area {
+    background-color: #F0F0F0;
+    border: 1px solid #AAA;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+    display: inline-block;
+    padding: 26px 0 20px;
+    position: relative;
+}
+
+.poor-text-area textarea {
+    border-color: #AAA;
+    border-style: solid;
+    border-width: 1px 0;
+    margin: 0;
+    outline: 0;
+    vertical-align: top;
+}
+
+.poor-text-area:-moz-full-screen {
+    display: block;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+}
+
+.poor-text-area:-moz-full-screen textarea {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+    max-height: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    min-width: 100%;
+    resize: none;
+    width: 100%;
+}
+
+.poor-text-area:-webkit-full-screen {
+    display: block;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+}
+
+.poor-text-area:-webkit-full-screen textarea {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+    max-height: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    min-width: 100%;
+    resize: none;
+    width: 100%;
+}
+
+.poor-text-area__control-bar {
+    display: inline-block;
+    height: 26px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    list-style: none;
+    left: 0;
+    position: absolute;
+    top: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    width: 100%;
+}
+
+.poor-text-area__control-bar__control {
+    background-color: #FFF;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #AAA;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 11px;
+    height: 20px;
+    line-height: 12px;
+    margin: 2px 0 2px -1px;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    text-align: center;
+    text-indent: -1000px;
+    vertical-align: middle;
+    width: 20px;
+}
+
+.poor-text-area__control-bar__control:focus {
+    border-color: #333;
+    outline: 0;
+    z-index: 2;
+}
+
+.poor-text-area__control-bar__control:hover {
+    background-color: transparent;
+}
+
+.poor-text-area__control-bar__control:active {
+    background-color: #FFF;
+}
+
+.poor-text-area__control-bar__control--bold {
+    background-image: url(icons/bold.png);
+}
+
+.poor-text-area__control-bar__control--italic {
+    background-image: url(icons/italic.png);
+}
+
+.poor-text-area__control-bar__control--indent {
+    background-image: url(icons/indent.png);
+}
+
+.poor-text-area__control-bar__control--outdent {
+    background-image: url(icons/outdent.png);
+}
+
+.poor-text-area__control-bar__control--numbered {
+    background-image: url(icons/numbered.png);
+}
+
+.poor-text-area__control-bar__control--bulleted {
+    background-image: url(icons/bulleted.png);
+}
+
+.poor-text-area__control-bar__control--quote {
+    background-image: url(icons/quote.png);
+}
+
+.poor-text-area__control-bar__control--code {
+    background-image: url(icons/code.png);
+}
+
+.poor-text-area__control-bar__control--link {
+    background-image: url(icons/link.png);
+}
+
+.poor-text-area__control-bar__control--image {
+    background-image: url(icons/image.png);
+}
+
+.poor-text-area__control-bar__control--first {
+    -webkit-border-bottom-left-radius: 3px;
+    -moz-border-radius-bottomleft: 3px;
+    -o-border-bottom-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    -webkit-border-top-left-radius: 3px;
+    -moz-border-radius-topleft: 3px;
+    -o-border-top-left-radius: 3px;
+    border-top-left-radius: 3px;
+    margin-left: 4px;
+}
+
+.poor-text-area__control-bar__control--last {
+    -webkit-border-bottom-right-radius: 3px;
+    -moz-border-radius-bottomright: 3px;
+    -o-border-bottom-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    -webkit-border-top-right-radius: 3px;
+    -moz-border-radius-topright: 3px;
+    -o-border-top-right-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.poor-text-area__info-bar {
+    bottom: 0;
+    cursor: default;
+    display: inline-block;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    height: 20px;
+    left: 0;
+    line-height: 20px;
+    position: absolute;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    width: 100%;
+}
+
+.poor-text-area__info-bar__info {
+    display: inline-block;
+    height: 20px;
+    margin: 0 4px;
+}
+
+.poor-text-area__status-bar {
+    bottom: 0;
+    cursor: default;
+    display: inline-block;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    height: 20px;
+    line-height: 20px;
+    position: absolute;
+    right: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.poor-text-area__status-bar__status {
+    background-color: #FFF;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #AAA;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-block;
+    height: 14px;
+    margin: 2px 4px 2px 0;
+    outline: 0;
+    overflow: hidden;
+    text-indent: -1000px;
+    vertical-align: top;
+    width: 14px;
+}
+
+.poor-text-area__status-bar__status:focus {
+    border-color: #333;
+    outline: 0;
+}
+
+.poor-text-area__status-bar__status:hover {
+    background-color: #F0F0F0;
+}
+
+.poor-text-area__status-bar__status:active {
+    background-color: #FFF;
+}
+
+.poor-text-area__status-bar__status--tabtoggle {
+    background-image: url(icons/navigation.png);
+}
+
+[data-tabbable="1"] .poor-text-area__status-bar__status--tabtoggle {
+    background-image: url(icons/indentation.png);
+}
+
+.poor-text-area__status-bar__status--tab__label {
+    font-family: "Courier New", monospace;
+}
+
+.poor-text-area__status-bar__status--fullscreen {
+    background-image: url(icons/maximize.png);
+}
+
+:-moz-full-screen .poor-text-area__status-bar__status--fullscreen {
+    background-image: url(icons/restore.png);
+}
+
+:-webkit-full-screen .poor-text-area__status-bar__status--fullscreen {
+    background-image: url(icons/restore.png);
+}
