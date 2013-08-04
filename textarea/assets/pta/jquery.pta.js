@@ -278,6 +278,9 @@
         _blurHandler: function () {
             clearInterval(this._interval);
         },
+        _triggerChange: function () {
+            this._element.trigger('change');
+        },
         bold: function () {
             //trigger the 'ptabold' event, if successful, embolden the text
             var event,
@@ -319,6 +322,7 @@
                 elem.selectionEnd = sEnd + 2;
             }
             elem.selectionDirection = fwd ? 'forward' : 'backward';
+            this._triggerChange();
         },
         italic: function () {
             //trigger the 'ptaitalic' event, if successful, italicize the text
@@ -373,6 +377,7 @@
                 elem.selectionEnd = sEnd - 1;
             }
             elem.selectionDirection = fwd ? 'forward' : 'backward';
+            this._triggerChange();
         },
         outdent: function () {
             var event,
@@ -445,6 +450,7 @@
             elem.selectionStart = sStart;
             elem.selectionEnd = sStart + middle.length;
             elem.selectionDirection = fwd ? 'forward' : 'backward';
+            this._triggerChange();
         },
         indent: function () {
             var event,
@@ -520,6 +526,7 @@
             elem.selectionStart = sStart;
             elem.selectionEnd = sStart + middle.length;
             elem.selectionDirection = fwd ? 'forward' : 'backward';
+            this._triggerChange();
         },
         code: function () {
             var val,
@@ -559,6 +566,7 @@
                 elem.selectionEnd = sEnd + 1;
             }
             elem.selectionDirection = fwd ? 'forward' : 'backward';
+            this._triggerChange();
         },
         code2: function () {
             var event,
@@ -604,6 +612,7 @@
                 elem.selectionEnd = sEnd + 2;
             }
             elem.selectionDirection = fwd ? 'forward' : 'backward';
+            this._triggerChange();
         },
         quote: function () {
             var event,
@@ -627,6 +636,7 @@
             beginning = val.slice(0, sStart);
             middle = val.slice(sStart, sEnd);
             end = val.slice(sEnd);
+            this._triggerChange();
         },
         bulleted: function () {
             var event,
@@ -650,6 +660,7 @@
             beginning = val.slice(0, sStart);
             middle = val.slice(sStart, sEnd);
             end = val.slice(sEnd);
+            this._triggerChange();
         },
         numbered: function () {
             var event,
@@ -673,9 +684,11 @@
             beginning = val.slice(0, sStart);
             middle = val.slice(sStart, sEnd);
             end = val.slice(sEnd);
+            this._triggerChange();
         },
         link: function () {
-            var event,
+            var self,
+                event,
                 elem,
                 i,
                 val,
@@ -695,6 +708,7 @@
                 return true;
             }
             
+            self = this;
             elem = this._element.get(0);
             val = elem.value;
             sStart = elem.selectionStart || 0;
@@ -743,11 +757,13 @@
                     elem.selectionStart = sStart + 1;
                     elem.selectionEnd = sStart + 1 + middle.length;
                     elem.selectionDirection = fwd ? 'forward' : 'backward';
+                    self._triggerChange();
                 }, middle);
             }
         },
         image: function () {
-            var event,
+            var self,
+                event,
                 elem,
                 i,
                 val,
@@ -767,6 +783,7 @@
                 return true;
             }
             
+            self = this;
             elem = this._element.get(0);
             val = elem.value;
             sStart = elem.selectionStart || 0;
@@ -815,6 +832,7 @@
                     elem.selectionStart = sStart + 2;
                     elem.selectionEnd = sStart + 2 + middle.length;
                     elem.selectionDirection = fwd ? 'forward' : 'backward';
+                    self._triggerChange();
                 }, middle);
             }
         },
@@ -853,6 +871,7 @@
             elem.selectionStart =
                 elem.selectionEnd = beginning.length + newline.length;
             elem.selectionDirection = 'forward';
+            this._triggerChange();
         },
         home: function () {
             var event,
