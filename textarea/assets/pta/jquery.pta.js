@@ -119,7 +119,13 @@
             'imageManager': function (callback, text) {
                 callback(prompt('Enter an image URL', 'http://'));
             },
-            'remember': true
+            'remember': true,
+            'memory': {
+                'width': true,
+                'height': true,
+                'scrollLeft': true,
+                'scrollTop': true
+            }
         },
         _init: function () {
             var memory,
@@ -148,17 +154,17 @@
             this._name = '' + this._name;
             if (this._shouldRemember()) {
                 memory = this._remember();
-                if (has(memory, 'width')) {
+                if (options.memory.width && has(memory, 'width')) {
                     this._element.width(memory.width);
                 }
-                if (has(memory, 'height')) {
+                if (options.memory.height && has(memory, 'height')) {
                     this._element.height(memory.height);
                 }
-                if (has(memory, 'left')) {
-                    this._element.scrollLeft(memory.left);
+                if (options.memory.scrollLeft && has(memory, 'scrollLeft')) {
+                    this._element.scrollLeft(memory.scrollLeft);
                 }
-                if (has(memory, 'top')) {
-                    this._element.scrollTop(memory.top);
+                if (options.memory.scrollTop && has(memory, 'scrollTop')) {
+                    this._element.scrollTop(memory.scrollTop);
                 }
             }
             
@@ -307,8 +313,8 @@
             //get the pta data and add the current width, height, scrollLeft, and scrollTop
             if (this._shouldRemember()) {
                 this._remember({
-                    'left': element.scrollLeft(),
-                    'top': element.scrollTop(),
+                    'scrollLeft': element.scrollLeft(),
+                    'scrollTop': element.scrollTop(),
                     'width': element.width(),
                     'height': element.height()
                 });
