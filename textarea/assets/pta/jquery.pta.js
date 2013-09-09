@@ -27,6 +27,10 @@
         this.event = type;
     }
     
+    function has(obj, prop) {
+        return Object.prototype.hasOwnProperty.call(obj, prop);
+    }
+    
     $[widget] = function (element, opts) {
         if (!(this instanceof $[widget])) {
             return new $[widget](element, opts);
@@ -114,10 +118,12 @@
             },
             'imageManager': function (callback, text) {
                 callback(prompt('Enter an image URL', 'http://'));
-            }
+            },
+            'remember': true
         },
         _init: function () {
-            var options,
+            var memory,
+                options,
                 $controlBar,
                 $statusBar,
                 $infoBar,
@@ -131,6 +137,30 @@
             $controlBar = this._controlBar.attr('class', '').addClass(options.classes.controlBar).empty();
             $statusBar = this._statusBar.attr('class', '').addClass(options.classes.statusBar).empty();
             $infoBar = this._infoBar.attr('class', '').addClass(options.classes.infoBar).empty();
+            
+            this._name = options.remember;
+            if (this._name === true) {
+                this._name = this._element.prop('name');
+            }
+            if (!this._name) {
+                this._name = '';
+            }
+            this._name = '' + this._name;
+            if (this._shouldRemember()) {
+                memory = this._remember();
+                if (has(memory, 'width')) {
+                    this._element.width(memory.width);
+                }
+                if (has(memory, 'height')) {
+                    this._element.height(memory.height);
+                }
+                if (has(memory, 'left')) {
+                    this._element.scrollLeft(memory.left);
+                }
+                if (has(memory, 'top')) {
+                    this._element.scrollTop(memory.top);
+                }
+            }
             
             $.each(options.controls, function (i) {
                 var first,
@@ -241,7 +271,8 @@
             }
         },
         _updateHandler: function () {
-            var elem,
+            var element,
+                elem,
                 val,
                 start,
                 beginning,
@@ -249,7 +280,8 @@
                 lineStart,
                 data;
             
-            elem = this._element.get(0);
+            element = this._element;
+            elem = element.get(0);
             val = elem.value;
             start = elem.selectionDirection === 'forward' ? elem.selectionEnd || 0 : elem.selectionStart || 0;
             beginning = val.slice(0, start);
@@ -257,7 +289,7 @@
             lines = beginning.split(/\r?\n|\r/g);
             
             data = {
-                length: this._element.val().length,
+                length: element.val().length,
                 line: lines.length,
                 column: start - lineStart,
             };
@@ -270,6 +302,17 @@
                     $this.text(data[key]);
                 }
             });
+            
+            //if pta should remember the size and scroll position
+            //get the pta data and add the current width, height, scrollLeft, and scrollTop
+            if (this._shouldRemember()) {
+                this._remember({
+                    'left': element.scrollLeft(),
+                    'top': element.scrollTop(),
+                    'width': element.width(),
+                    'height': element.height()
+                });
+            }
         },
         _focusHandler: function () {
             clearInterval(this._interval);
@@ -280,6 +323,31 @@
         },
         _triggerChange: function () {
             this._element.trigger('change');
+        },
+        _shouldRemember: function () {
+            return !!this._name;
+        },
+        _remember: function (memory) {
+            var e,
+                pta;
+            try {
+                pta = JSON.parse(window.localStorage.getItem('pta')) || {};
+            } catch (e) {
+                console && console.error && console.error(e.message);
+                pta = {};
+            }
+            
+            if (arguments.length) {
+                pta[this._name] = memory;
+            } else {
+                return has(pta, this._name) ? pta[this._name] : {};
+            }
+            
+            try {
+                localStorage.setItem('pta', JSON.stringify(pta));
+            } catch (e) {
+                console && console.error && console.error(e.message);
+            }
         },
         bold: function () {
             //trigger the 'ptabold' event, if successful, embolden the text
