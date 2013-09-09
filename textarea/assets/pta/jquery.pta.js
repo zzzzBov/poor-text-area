@@ -1081,7 +1081,7 @@
                 res;
             $this = $(this);
             if (!$this.is(':' + widget)) {
-                wgt = new $[widget]($this, $.extend({}, args[0] || {}, $[widget].prototype._options));
+                wgt = new $[widget]($this, $.extend({}, $[widget].prototype._options, args[0] || {}));
                 $this.data(widget, wgt);
                 wgt._init();
                 return;
